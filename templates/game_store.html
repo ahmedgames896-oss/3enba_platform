@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شحن اللعبة - 3enba</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root { --glass: rgba(26, 16, 61, 0.7); --border: 1px solid rgba(0, 255, 204, 0.2); --neon: #00ffcc; }
+        body { font-family: 'Cairo', sans-serif; background-color: #0d071e; color: #fff; margin: 0; padding-bottom: 50px; }
+        
+        .store-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        
+        /* كارد إدخال الـ ID */
+        .id-section { background: var(--glass); backdrop-filter: blur(10px); border: var(--border); border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .step-title { color: var(--neon); font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        /* شبكة المنتجات (الباقات) */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .product-card { background: rgba(255, 255, 255, 0.03); border: var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; }
+        .product-card:hover { border-color: var(--neon); transform: translateY(-3px); box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); }
+        .product-card.selected { background: rgba(0, 255, 204, 0.1); border-color: var(--neon); box-shadow: 0 0 20px rgba(0, 255, 204, 0.4); }
+        
+        .product-icon { font-size: 32px; margin-bottom: 10px; }
+        .product-img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .product-price { color: var(--neon); font-size: 15px; font-weight: bold; }
+
+        .section-heading { font-size: 20px; margin: 25px 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; color: #fff; }
+        
+        /* تنسيق الروابط في النافبار */
+        .nav-menu a { color: #fff; text-decoration: none; transition: 0.3s; font-size: 14px; }
+        .nav-menu a:hover { color: var(--neon); }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-section">
+            <!-- قسم الشعار مع ربطه بالصفحة الرئيسية -->
+<a href="{% url 'home' %}" class="logo-section" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+    <span class="logo-icon" style="font-size: 24px;">🍇</span>
+    <span class="logo-text" style="font-size: 20px; font-weight: bold; color: var(--neon-color);">3enba</span>
+</a>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}" class="nav-link">الرئيسية</a>
+            <a href="{% url 'game_store' 'FREEFIRE' %}" class="nav-link active-link">شحن ID</a>
+            <a href="{% url 'account_topup' %}" class="nav-link">شحن بالحساب</a>
+            <a href="{% url 'contests' %}" class="nav-link">المسابقات 🏆</a>
+           <a href="{% url 'p2p_market' %}" class="nav-link">نظام P2P</a>
+        </nav>
+        <div class="header-actions">
+            <a href="{% url 'dashboard' %}" class="neon-button" style="padding: 6px 20px;">حسابي</a>
+        </div>
+    </header>
+
+    <div class="store-container">
+        
+        <form action="{% url 'create_order' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="service_name" value="{{ game_code }}">
+            <!-- سيتم تحديث السعر والباقة عبر الـ JavaScript -->
+            <input type="hidden" name="price" id="selectedPriceInput" value="0">
+            <input type="hidden" name="package_title" id="selectedPackageInput" value="">
+
+            <!-- الخطوة 1: إدخال الـ ID -->
+            <div class="id-section">
+                <div class="step-title"><span>1️⃣</span> أدخل معرّف اللاعب (Player ID)</div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" name="player_id" required placeholder="مثال: 48920193" style="flex: 1; min-width: 250px; padding: 12px; background: rgba(255,255,255,0.05); border: var(--border); border-radius: 8px; color: #fff; font-family: 'Cairo'; outline: none;">
+                </div>
+            </div>
+
+            <!-- الخطوة 2: باقات الجواهر العادية -->
+            <div class="step-title" style="margin-top: 20px;"><span>2️⃣</span> اختر كمية الشحن (الباقات)</div>
+            <div class="products-grid">
+                {% for prod in normal_products %}
+                <div class="product-card" onclick="selectProduct(this, '{{ prod.title }}', '{{ prod.price }}')">
+                    {% if prod.product_image %}
+                        <img src="{{ prod.product_image.url }}" alt="{{ prod.title }}" class="product-img">
+                    {% else %}
+                        <div class="product-icon">💎</div>
+                    {% endif %}
+                    <div class="product-title">{{ prod.title }}</div>
+                    <div class="product-price">${{ prod.price }}</div>
+                </div>
+                {% empty %}
+                <p style="color: #888; grid-column: 1/-1;">لا توجد باقات عادية مضافة لهذه اللعبة حتى الآن. (أضفها من لوحة الأدمن)</p>
+                {% endfor %}
+            </div>
+
+            <!-- العروض الخاصة (تصريح بوياه، العضويات، إلخ) -->
+            {% if special_products %}
+            <h3 class="section-heading">🎁 العروض الخاصة</h3>
+            <div class="products-grid">
+                {% for prod in special_products %}
+                <div class="product-card" onclick="selectProduct(this, '{{ prod.title }}', '{{ prod.price }}')" style="border-color: rgba(255, 51, 102, 0.4);">
+                    {% if prod.product_image %}
+                        <img src="{{ prod.product_image.url }}" alt="{{ prod.title }}" class="product-img">
+                    {% else %}
+                        <div class="product-icon">🔥</div>
+                    {% endif %}
+                    <div class="product-title">{{ prod.title }}</div>
+                    <div class="product-price" style="color: #ff3366;">${{ prod.price }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- زر تأكيد الطلب النهائي -->
+            <div style="margin-top: 30px; background: var(--glass); padding: 20px; border-radius: 15px; border: var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <span style="color: #aaa;">الباقة المحددة: <strong id="summaryPackage" style="color: var(--neon);">لم تقترب من اختيار باقة</strong></span><br>
+                    <span style="color: #aaa;">المطلوب دفعه: <strong id="summaryPrice" style="color: var(--neon); font-size: 20px;">0.00</strong> USD</span>
+                </div>
+                <button type="submit" id="submitOrderBtn" disabled style="background: #333; color: #777; border: 0; padding: 12px 30px; border-radius: 10px; font-weight: bold; font-family: 'Cairo'; cursor: not-allowed; transition: 0.3s;">تأكيد الدفع من المحفظة 🛒</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        function selectProduct(element, title, price) {
+            // إزالة التحديد عن الكروت كلها وتحديد الكرد المضغوط
+            document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+
+            // تحديث الحقول المخفية للـ Form
+            document.getElementById('selectedPriceInput').value = price;
+            document.getElementById('selectedPackageInput').value = title;
+
+            // تحديث واجهة الملخص
+            document.getElementById('summaryPackage').innerText = title;
+            document.getElementById('summaryPrice').innerText = price;
+
+            // تفعيل زر الشراء
+            let btn = document.getElementById('submitOrderBtn');
+            btn.disabled = false;
+            btn.style.background = 'var(--neon)';
+            btn.style.color = '#1a103d';
+            btn.style.cursor = 'pointer';
+            btn.style.boxShadow = '0 0 15px rgba(0, 255, 204, 0.4)';
+        }
+    </script>
+</body>
+</html>

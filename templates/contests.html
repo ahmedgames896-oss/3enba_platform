@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المسابقات والبطولات - 3enba</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root { --glass: rgba(255, 255, 255, 0.03); --border: 1px solid rgba(255, 255, 255, 0.1); --neon-color: #00ffcc; }
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; text-align: right; margin: 0; padding-bottom: 50px; }
+        
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h1 { color: #fff; font-size: 32px; margin-bottom: 10px; }
+        .page-header p { color: #888; font-size: 16px; }
+
+        /* رسائل التنبيه */
+        .messages-container { margin-bottom: 20px; }
+        .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 10px; font-weight: bold; }
+        .alert-success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+        .alert-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+
+        /* شبكة المسابقات */
+        .contests-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .contest-card { background: var(--glass); border: var(--border); border-radius: 20px; padding: 25px; backdrop-filter: blur(10px); position: relative; overflow: hidden; transition: 0.3s; }
+        .contest-card:hover { transform: translateY(-5px); border-color: var(--neon-color); box-shadow: 0 10px 25px rgba(0,255,204,0.1); }
+        
+        .badge-type { position: absolute; top: 20px; left: 20px; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .badge-free { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+        .badge-paid { background: rgba(241, 196, 15, 0.2); color: #f1c40f; border: 1px solid #f1c40f; }
+
+        .contest-title { font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 10px; margin-top: 0; }
+        .contest-desc { color: #aaa; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+        
+        .contest-info-box { background: rgba(0,0,0,0.2); padding: 12px 15px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: var(--border); }
+        .info-label { font-size: 13px; color: #888; }
+        .info-value { font-size: 16px; font-weight: bold; color: var(--neon-color); }
+
+        /* صندوق بيانات الغرفة للمشتركين فقط */
+        .room-credentials { background: rgba(0, 255, 204, 0.05); border: 1px dashed var(--neon-color); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        .room-credentials h4 { color: var(--neon-color); margin: 0 0 8px 0; font-size: 15px; }
+        .room-credentials p { margin: 4px 0; font-size: 14px; color: #ddd; }
+
+        .btn-join { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-family: 'Cairo'; font-size: 15px; cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none; display: block; }
+        .btn-join-free { background: #2ecc71; color: #fff; }
+        .btn-join-free:hover { background: #27ae60; }
+        .btn-join-paid { background: #00ffcc; color: #1a103d; }
+        .btn-join-paid:hover { background: #00cca3; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-section">
+            <!-- قسم الشعار مع ربطه بالصفحة الرئيسية -->
+<a href="{% url 'home' %}" class="logo-section" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+    <span class="logo-icon" style="font-size: 24px;">🍇</span>
+    <span class="logo-text" style="font-size: 20px; font-weight: bold; color: var(--neon-color);">3enba</span>
+</a>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}" class="nav-link">الرئيسية</a>
+            <a href="{% url 'game_store' 'FREEFIRE' %}" class="nav-link">شحن ID</a>
+            <a href="{% url 'account_topup' %}" class="nav-link">شحن بالحساب</a>
+            <a href="{% url 'contests' %}" class="nav-link active-link">المسابقات 🏆</a>
+           <a href="{% url 'p2p_market' %}" class="nav-link">نظام P2P</a>
+        </nav>
+        <div class="header-actions">
+            <a href="{% url 'dashboard' %}" class="neon-button" style="padding: 6px 20px;">حسابي</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>🏆 ساحة المسابقات والبطولات</h1>
+            <p>انضم للمسابقات المجانية (لجذب الأصدقاء) أو المدفوعة (بإشراف احترافي وجوائز كبرى)، ونافس الأبطال!</p>
+        </div>
+
+        <!-- رسائل النظام -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="contests-grid">
+            {% for contest in contests %}
+            <div class="contest-card" {% if contest.contest_type == 'PAID' %}style="border-color: rgba(241, 196, 15, 0.4);"{% endif %}>
+                <span class="badge-type {% if contest.contest_type == 'FREE' %}badge-free{% else %}badge-paid{% endif %}">
+                    {{ contest.get_contest_type_display }}
+                </span>
+                
+                <h3 class="contest-title">{{ contest.title }}</h3>
+                <p class="contest-desc">{{ contest.description }}</p>
+                
+                <div class="contest-info-box">
+                    <div>
+                        <span class="info-label">الجائزة</span>
+                        <div class="info-value" {% if contest.contest_type == 'PAID' %}style="color: #f1c40f;"{% endif %}>{{ contest.prize_description }}</div>
+                    </div>
+                    <div>
+                        <span class="info-label">{% if contest.contest_type == 'PAID' %}رسوم الإشراف{% else %}المشاركون{% endif %}</span>
+                        <div class="info-value">{% if contest.contest_type == 'PAID' %}${{ contest.ticket_price }}{% else %}{{ contest.participants.count }} / {{ contest.max_participants }}{% endif %}</div>
+                    </div>
+                </div>
+
+                <!-- إذا كان المستخدم مشتركاً، تظهر له بيانات الغرفة أو زر قناة الواتساب -->
+        {% if contest.id in user_joined_contests %}
+    <div class="room-credentials">
+        <h4>🎮 بيانات دخول الغرفة (مفعلة لك)</h4>
+        {% if contest.room_id %}
+            <p>رقم الغرفة (Room ID): <strong>{{ contest.room_id }}</strong></p>
+            <p>الباسورد: <strong>{{ contest.room_password }}</strong></p>
+        {% else %}
+            <p style="color: #f1c40f;">⏳ لم يتم إدراج بيانات الغرفة بعد، سيتم إرسالها قريباً!</p>
+        {% endif %}
+
+        {% if contest.whatsapp_channel_link %}
+            <a href="{{ contest.whatsapp_channel_link }}" target="_blank" style="display: inline-block; margin-top: 10px; background: #25D366; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px;">
+                <i class="fa-brands faام-whatsapp"></i> انضم لقناة الواتساب للتنبيهات 📢
+            </a>
+        {% endif %}
+        <small style="display: block; color: #00ffcc; margin-top: 8px;">التزم بوقت الماتش بالتحديد!</small>
+    </div>
+    <button class="btn-join" style="background: #4a5568; color: #fff; cursor: not-allowed;" disabled>أنت مشارك بالفعل ✅</button>
+{% else %}
+    <!-- فورم الانضمام العادي -->
+    <form action="{% url 'join_contest' contest.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-join {% if contest.contest_type == 'FREE' %}btn-join-free{% else %}btn-join-paid{% endif %}">
+            {% if contest.contest_type == 'FREE' %}انضم للمسابقة مجاناً 🚀{% else %}شراء التذكرة والانضمام (${{ contest.ticket_price }}) 🎟️{% endif %}
+        </button>
+    </form>
+{% endif %}
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #888;">
+                <i class="fa-solid fa-trophy" style="font-size: 48px; margin-bottom: 15px; color: #4a5568;"></i>
+                <p>لا توجد مسابقات نشطة حالياً. ترقبوا البطولات القادمة قريباً! 🔥</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3enba - منصة شحن الألعاب</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* كلاسات التنسيق للرسائل */
+        .msg-success { border-right: 5px solid #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.3); }
+        .msg-error { border-right: 5px solid #ff3366; box-shadow: 0 0 15px rgba(255,51,102,0.3); }
+    </style>
+</head>
+<body>
+
+    {% if messages %}
+    <div class="messages-container" style="position: fixed; top: 85px; left: 20px; z-index: 9999; max-width: 350px; direction: rtl;">
+        {% for message in messages %}
+            <div class="glass-card {% if 'success' in message.tags %}msg-success{% else %}msg-error{% endif %}" 
+                 style="padding: 15px; margin-bottom: 10px; border-radius: 10px; background: rgba(26, 16, 61, 0.6); backdrop-filter: blur(10px);">
+                <p style="margin: 0; color: #fff; font-size: 14px; font-family: 'Cairo', sans-serif;">{{ message }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(function() {
+            let container = document.querySelector('.messages-container');
+            if (container) { 
+                container.style.transition = 'opacity 0.5s'; 
+                container.style.opacity = '0'; 
+                setTimeout(() => container.remove(), 500); 
+            }
+        }, 4000);
+    </script>
+    {% endif %}
+
+    <header class="main-header">
+        <div class="logo-section">
+            <span class="logo-icon">🍇</span>
+            <span class="logo-text">3enba</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}" class="nav-link active-link">الرئيسية</a>
+            <a href="{% url 'game_store' 'FREEFIRE' %}" class="nav-link">شحن ID</a>
+            <a href="{% url 'account_topup' %}" class="nav-link">شحن بالحساب</a>
+            <a href="{% url 'contests' %}" class="nav-link">المسابقات</a>
+           <a href="{% url 'p2p_market' %}" class="nav-link">نظام P2P</a>
+        </nav>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 10px;">
+            {% if user.is_authenticated %}
+                <div class="nav-balance-box" onclick="openDepositModal()" style="background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(0, 255, 204, 0.4); box-shadow: 0 0 12px rgba(0, 255, 204, 0.3); cursor: pointer; display: flex; align-items: center; gap: 8px;" title="اضغط لشحن المحفظة">
+                    <span style="color: #aaa; font-size: 12px;">المحفظة:</span>
+                    <strong style="color: #00ffcc; font-size: 14px;">${{ user.profile.wallet_balance }}</strong>
+                    <span style="background: #00ffcc; color: #1a103d; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">+</span>
+                </div>
+                <a href="{% url 'dashboard' %}" class="action-btn" title="لوحة التحكم">👤</a>
+                <a href="{% url 'logout' %}" style="color: #ff3366; text-decoration: none; font-size: 14px; font-weight: 600; margin-right: 5px;">خروج</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="neon-button" style="padding: 5px 15px; font-size: 13px; text-decoration: none;">دخول / تسجيل</a>
+            {% endif %}
+
+            <button class="action-btn" title="البحث">🔍</button>
+            <button class="action-btn cart-btn" title="السلة">
+                🛒 <span class="cart-badge">0</span>
+            </button>
+            <button class="mobile-menu-toggle" id="menuToggle">☰</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-banner" style="background: linear-gradient(135deg, #1A103D, #106674); padding: 30px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; border: 1px solid rgba(0, 255, 204, 0.2); gap: 20px; flex-wrap: wrap;">
+            <div class="hero-content" style="flex: 1; min-width: 300px; text-align: right;">
+                <h1 style="color: #fff; font-size: 32px; margin-bottom: 20px; line-height: 1.4;">خصومات هائلة على<br>شحن جواهر فري فاير!</h1>
+                <!-- زر البانر يوجه مباشرة لصفحة متجر فري فاير الديناميكية -->
+                <a href="{% url 'game_store' 'FREEFIRE' %}" class="neon-button" style="background: #1AEFC4; color: #1A103D; padding: 12px 30px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: 'Cairo'; text-decoration: none; display: inline-block;">اشحن الآن!</a>
+            </div>
+            <div class="hero-image-container" style="flex: 1; min-width: 250px; text-align: center;">
+                <img src="{% static 'images/controller.png' %}" alt="3enba Controller" style="width: 100%; max-width: 300px; filter: drop-shadow(0 0 15px rgba(0, 255, 204, 0.5));">
+            </div>
+        </section>
+
+        <!-- شبكة الألعاب المحدثة لتوجه لصفحة المتجر المخصصة لكل لعبة -->
+        <section class="games-grid">
+            <a href="{% url 'game_store' 'FREEFIRE' %}" class="game-card" style="text-decoration: none; color: inherit; display: block;">
+                <div class="game-icon">🔥</div>
+                <h3 class="game-title">Free Fire</h3>
+            </a>
+            <a href="{% url 'game_store' 'PUBG' %}" class="game-card" style="text-decoration: none; color: inherit; display: block;">
+                <div class="game-icon">🪂</div>
+                <h3 class="game-title">PUBG Mobile</h3>
+            </a>
+            <a href="{% url 'game_store' 'VALORANT' %}" class="game-card" style="text-decoration: none; color: inherit; display: block;">
+                <div class="game-icon">🎯</div>
+                <h3 class="game-title">Valorant</h3>
+            </a>
+            <a href="{% url 'game_store' 'COD' %}" class="game-card" style="text-decoration: none; color: inherit; display: block;">
+                <div class="game-icon">🪖</div>
+                <h3 class="game-title">Call of Duty Mobile</h3>
+            </a>
+        </section>
+    </main>
+
+    <!-- مودال شحن المحفظة (الخاص بالإيداعات اليدوية بالإيصالات) -->
+    <div class="modal-overlay" id="depositModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center;">
+        <div class="modal-box" style="background: #1a103d; border: 1px solid rgba(0, 255, 204, 0.3); padding: 25px; border-radius: 15px; max-width: 450px; width: 90%; box-shadow: 0 0 25px rgba(0, 255, 204, 0.2);">
+            <h2 class="modal-title" style="color: #fff; font-family: 'Cairo'; text-align: center; margin: 0 0 10px 0;">شحن رصيد المحفظة 💰</h2>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+            <div class="payment-instructions" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #eee; border-right: 4px solid #00ffcc; line-height: 1.6;">
+                <p style="margin: 0 0 5px 0;"><strong>طرق تحويل الأموال المتاحة حالياً:</strong></p>
+                {% if active_methods %}
+                    {% for method in active_methods %}
+                        <p style="margin: 4px 0;">
+                            • {{ method.get_method_type_display }}: 
+                            <span style="color: #00ffcc; font-weight: bold;">{{ method.account_detail }}</span> 
+                            <small style="color: #aaa;">({{ method.provider_name }})</small>
+                        </p>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #ff3366; margin: 0;">لا توجد وسائل دفع نشطة حالياً، يرجى مراجعة الإدارة.</p>
+                {% endif %}
+            </div>
+            <form action="{% url 'create_deposit' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="color: #aaa; font-size: 14px; display: block; margin-bottom: 5px;">اختر الطريقة التي حولت بها:</label>
+                    <select name="payment_method" style="width: 100%; padding: 10px; background: #1a103d; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: 'Cairo';">
+                        <option value="VODAFONE">فودافون كاش</option>
+                        <option value="INSTAPAY">InstaPay</option>
+                        <option value="BANK">تحويل بنكي / حساب تركي</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="color: #aaa; font-size: 14px; display: block; margin-bottom: 5px;">المبلغ المرسل (بالـ USD):</label>
+                    <input type="number" step="0.01" name="deposit_amount" required placeholder="مثال: 20.00" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: 'Cairo';">
+                </div>
+                
+                <!-- خانة رقم الهاتف المرسل المضافة حديثاً -->
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="color: #aaa; font-size: 14px; display: block; margin-bottom: 5px;">رقم الهاتف المحول منه (المرسل):</label>
+                    <input type="text" name="sender_phone" required placeholder="مثال: 01012345678" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: 'Cairo';">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="color: #aaa; font-size: 14px; display: block; margin-bottom: 5px;">ارفع صورة إيصال التحويل (Screenshot):</label>
+                    <input type="file" name="receipt_image" accept="image/*" required style="width: 100%; padding: 8px; color: #fff; font-family: 'Cairo'; text-align: right;">
+                </div>
+                <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="submit" class="confirm-btn" style="background: #00ffcc; color: #1a103d; border: 0; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo';">تأكيد وإرسال للإدارة</button>
+                    <button type="button" class="cancel-btn" onclick="closeDepositModal()" style="background: rgba(255,51,102,0.15); color: #ff3366; border: 1px solid #ff3366; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo';">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openDepositModal() {
+            let modal = document.getElementById('depositModal');
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        }
+        function closeDepositModal() {
+            let modal = document.getElementById('depositModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+        document.getElementById('depositModal').addEventListener('click', function(e) { if(e.target === this) closeDepositModal(); });
+    </script>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

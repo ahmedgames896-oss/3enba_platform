@@ -1,0 +1,99 @@
+/* --- 1. الـ Design Tokens والمتغيرات الصارمة --- */
+:root {
+    --bg-gradient-start: #1A103D;
+    --bg-gradient-end: #106674;
+    --neon-color: #1AEFC4;
+    --text-main: #FFFFFF;
+    --text-muted: #8A84A3;
+    --card-radius: 16px;
+    --gap-large: 30px;
+    --gap-standard: 16px;
+    --banner-padding-top: 50px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--text-main);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: var(--gap-standard); }
+
+/* --- 2. الهيدر والقائمة --- */
+.main-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(26, 16, 61, 0.6); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.logo-section { display: flex; align-items: center; gap: 8px; font-size: 24px; font-weight: 700; }
+.nav-menu { display: flex; gap: 25px; }
+.nav-link { color: var(--text-muted); text-decoration: none; font-size: 16px; transition: 0.3s; }
+.nav-link:hover, .nav-link.active-link { color: var(--neon-color); }
+.header-actions { display: flex; align-items: center; gap: 15px; }
+.action-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
+
+/* تأثير النبض والوميض (Neon Pulse Animation) */
+@keyframes neonPulse {
+    0% { opacity: 1; text-shadow: 0 0 10px rgba(26, 239, 196, 0.8), 0 0 20px rgba(26, 239, 196, 0.4); }
+    50% { opacity: 0.3; text-shadow: 0 0 2px rgba(26, 239, 196, 0.2); }
+    100% { opacity: 1; text-shadow: 0 0 10px rgba(26, 239, 196, 0.8), 0 0 20px rgba(26, 239, 196, 0.4); }
+}
+
+.pulsing-neon {
+    animation: neonPulse 1.5s infinite ease-in-out;
+}
+
+/* --- 3. البانر الرئيسي (Hero Banner) المطور --- */
+.hero-banner {
+    background: linear-gradient(90deg, rgba(26,16,61,0.8) 0%, rgba(16,102,116,0.8) 100%);
+    border-radius: var(--card-radius);
+    padding: 40px;
+    margin-top: var(--gap-large);
+    margin-bottom: var(--gap-large);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(26, 239, 196, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    gap: 30px;
+}
+
+.hero-content { flex: 1; }
+.hero-headline { font-size: 32px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; }
+
+/* تنسيق الصورة العائمة */
+.hero-image-container { flex: 1; display: flex; justify-content: center; align-items: center; }
+.hero-image-container img {
+    max-width: 100%;
+    width: 300px;
+    filter: drop-shadow(0 0 20px rgba(26, 239, 196, 0.5));
+    transition: transform 0.4s ease;
+}
+.hero-image-container img:hover { transform: scale(1.05); }
+
+/* زر النيون */
+.neon-button { background: transparent; border: 2px solid var(--neon-color); color: var(--neon-color); padding: 12px 30px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+.neon-button:hover { background: var(--neon-color); color: #1A103D; box-shadow: 0 0 20px var(--neon-color); }
+
+/* --- 4. الألعاب والبطاقات --- */
+.games-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-standard); }
+.game-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--card-radius); padding: 24px; text-align: center; cursor: pointer; transition: 0.3s; }
+.game-card:hover { border-color: var(--neon-color); background: rgba(26, 239, 196, 0.05); transform: translateY(-5px); }
+
+/* --- 5. لوحة التحكم (Dashboard) --- */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap-standard); margin-bottom: var(--gap-large); }
+.stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--card-radius); padding: 25px; }
+.stat-value { font-size: 36px; font-weight: 700; color: var(--neon-color); margin-top: 10px; }
+
+/* --- 6. المودالات (Modals) --- */
+.modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center; z-index:1000; }
+.modal-overlay.active { display:flex; }
+.modal-box { background: #1A103D; border: 2px solid var(--neon-color); border-radius: var(--card-radius); padding: 30px; width: 90%; max-width: 450px; }
+
+/* --- 7. التجاوب (Mobile Responsive) --- */
+@media (max-width: 992px) { .games-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+    .nav-menu { display: none; }
+    .hero-banner { flex-direction: column; text-align: center; }
+    .games-grid { grid-template-columns: repeat(1, 1fr); }
+    .stats-grid { grid-template-columns: 1fr; }
+}

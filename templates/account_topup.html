@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شحن بالحساب المباشر - 3enba</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --glass-bg: rgba(26, 16, 61, 0.45);
+            --glass-border: 1px solid rgba(26, 239, 196, 0.25);
+            --neon-color: #1AEFC4;
+            --neon-glow: 0 0 20px rgba(26, 239, 196, 0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1A103D 0%, #106674 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        .topup-wrapper {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .topup-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* خط إضاءة نيون علوي جمالي */
+        .topup-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-color), transparent);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .page-title span {
+            color: var(--neon-color);
+            text-shadow: 0 0 10px rgba(26, 239, 196, 0.5);
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #8A84A3;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* تنبيه الأمان الفخم */
+        .security-alert {
+            background: rgba(241, 196, 15, 0.08);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-right: 4px solid #f1c40f;
+            padding: 18px 20px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            color: #f39c12;
+            font-size: 14px;
+            line-height: 1.7;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .security-alert i {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .security-alert strong {
+            color: #fff;
+        }
+
+        /* تنسيق الحقول */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #E2E8F0;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(10, 5, 25, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--neon-color);
+            box-shadow: var(--neon-glow);
+            background: rgba(10, 5, 25, 0.8);
+        }
+
+        select.form-control option {
+            background: #1A103D;
+            color: #fff;
+        }
+
+        .form-hint {
+            color: #8A84A3;
+            font-size: 12px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* زر الإرسال الفخم */
+        .submit-btn {
+            background: transparent;
+            border: 2px solid var(--neon-color);
+            color: var(--neon-color);
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--neon-glow);
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background: var(--neon-color);
+            color: #1A103D;
+            box-shadow: 0 0 30px var(--neon-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .topup-card { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر الاحترافي -->
+    <header class="main-header">
+        <div class="logo-section">
+            <!-- قسم الشعار مع ربطه بالصفحة الرئيسية -->
+<a href="{% url 'home' %}" class="logo-section" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+    <span class="logo-icon" style="font-size: 24px;">🍇</span>
+    <span class="logo-text" style="font-size: 20px; font-weight: bold; color: var(--neon-color);">3enba</span>
+</a>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}" class="nav-link">الرئيسية</a>
+            <a href="{% url 'game_store' 'FREEFIRE' %}" class="nav-link">شحن ID</a>
+            <a href="{% url 'account_topup' %}" class="nav-link active-link">شحن بالحساب</a>
+            <a href="{% url 'contests' %}" class="nav-link">المسابقات 🏆</a>
+           <a href="{% url 'p2p_market' %}" class="nav-link">نظام P2P</a>
+        </nav>
+        <div class="header-actions">
+            <a href="{% url 'dashboard' %}" class="neon-button" style="padding: 6px 20px;">حسابي</a>
+        </div>
+    </header>
+
+    <main class="topup-wrapper">
+        <div class="topup-card">
+            <h1 class="page-title"><i class="fas fa-shield-alt"></i> شحن <span>الحساب المباشر</span></h1>
+            <p class="page-subtitle">أدخل بيانات حسابك بدقة ليتولى فريق الدعم الفني شحنه واكتامله بأمان تام</p>
+
+            <!-- تنبيه الأمان الفخم -->
+            <div class="security-alert">
+                <i class="fas fa-triangle-exclamation"></i>
+                <div>
+                    <strong>تنبيه أمني هام لحمايتك:</strong> 
+                    يُستحسن بشدة إرسال <strong>ربط غير أساسي (فرعي/مؤقت)</strong> لحسابك، وننصح بضرورة <strong>تغيير كلمة المرور أو إزالة الربط فوراً</strong> بمجرد انتهاء الشحن بنجاح لضمان الأمان الكامل لحسابك الشخصي.
+                </div>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-gamepad" style="color: var(--neon-color); margin-left: 5px;"></i> اللعبة المستهدفة:</label>
+                        <select name="game" class="form-control" required>
+                            <option value="PUBG">ببجي موبايل (PUBG Mobile)</option>
+                            <option value="FREEFIRE">فري فاير (Free Fire)</option>
+                            <option value="OTHER">لعبة أخرى</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-sign-in-alt" style="color: var(--neon-color); margin-left: 5px;"></i> طريقة تسجيل الدخول:</label>
+                        <input type="text" name="login_method" class="form-control" placeholder="مثال: فيسبوك / Google / تويتر" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope" style="color: var(--neon-color); margin-left: 5px;"></i> البريد الإلكتروني / المعرف:</label>
+                        <input type="text" name="account_email" class="form-control" placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock" style="color: var(--neon-color); margin-left: 5px;"></i> كلمة المرور:</label>
+                        <input type="password" name="account_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-phone-alt" style="color: var(--neon-color); margin-left: 5px;"></i> رقم الهاتف للتواصل (واتساب):</label>
+                        <input type="text" name="phone_number" class="form-control" placeholder="010XXXXXXXX" required>
+                        <span class="form-hint">سنتواصل معك في حال احتجنا أي تفاصيل أثناء الدخول.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-box-open" style="color: var(--neon-color); margin-left: 5px;"></i> الباقة أو العرض المطلوبة:</label>
+                        <input type="text" name="package_details" class="form-control" placeholder="مثال: 600 شدة أو العرض المميز بـ 15$" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-bolt"></i> إرسال طلب الشحن المباشر
+                </button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

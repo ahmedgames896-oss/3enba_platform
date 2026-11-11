@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرفة الوساطة والشات الفوري | 3enba 🍇</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0d0f12;
+            color: #f0f2f5;
+            font-family: Tahoma, Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding-bottom: 30px;
+        }
+        /* النافبار */
+        .navbar {
+            background-color: #15181e;
+            border-bottom: 1px solid #262d3a;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: #f0f2f5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-outline {
+            border: 1px solid #444;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            background: #222;
+        }
+
+        /* الحاويات العامة */
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .col-4 {
+            flex: 1;
+            min-width: 320px;
+        }
+        .col-8 {
+            flex: 2;
+            min-width: 350px;
+        }
+
+        /* الكروت */
+        .card {
+            background-color: #15181e;
+            border: 1px solid #262d3a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .card h5, .card h6 {
+            color: #00ffcc;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 1px solid #262d3a;
+            padding-bottom: 8px;
+        }
+
+        /* صورة الإعلان */
+        .listing-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #262d3a;
+            margin-bottom: 15px;
+        }
+
+        /* الأزرار */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+        }
+        .btn-success {
+            background-color: #198754;
+            color: white;
+        }
+        .btn-success:hover { background-color: #157347; }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover { background-color: #bb2d3b; }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            color: white;
+            width: auto;
+            padding: 0 25px;
+        }
+
+        /* الشات */
+        .chat-wrapper {
+            background-color: #1a1e26;
+            border: 1px solid #262d3a;
+            border-radius: 12px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            padding: 15px 20px;
+            background-color: #15181e;
+            border-bottom: 1px solid #262d3a;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .msg {
+            margin-bottom: 15px;
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .msg-sent {
+            background-color: #0d6efd;
+            color: white;
+            margin-left: auto;
+            border-bottom-left-radius: 2px;
+        }
+        .msg-recv {
+            background-color: #262d3a;
+            color: #fff;
+            margin-right: auto;
+            border-bottom-right-radius: 2px;
+        }
+        .msg-info {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* إدخال الرسائل */
+        .chat-input-area {
+            padding: 15px;
+            background-color: #15181e;
+            border-top: 1px solid #262d3a;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .chat-form {
+            display: flex;
+            gap: 10px;
+        }
+        .form-control {
+            flex: 1;
+            background-color: #0d0f12;
+            border: 1px solid #262d3a;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+        .form-control:focus {
+            border-color: #00ffcc;
+        }
+
+        /* التنبيهات */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #198754;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Modal بسيط للنزاع */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #15181e;
+            padding: 25px;
+            border-radius: 12px;
+            width: 450px;
+            border: 1px solid #dc3545;
+        }
+        textarea.form-control {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- النافبار -->
+    <div class="navbar">
+        <a href="{% url 'p2p_market' %}">🍇 3enba | غرفة الوساطة الآمنة (Escrow)</a>
+        <a href="{% url 'p2p_market' %}" class="btn-outline">العودة لسوق P2P</a>
+    </div>
+
+    <div class="container">
+        
+        <!-- التنبيهات -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            
+            <!-- معلومات الإعلان -->
+            <div class="col-4">
+                <div class="card">
+                    <h5>بيانات الإعلان</h5>
+                    
+                    {% if listing.image %}
+                        <img src="{{ listing.image.url }}" alt="صورة" class="listing-img">
+                    {% endif %}
+
+                    <p style="font-weight: bold; margin-bottom: 8px;">{{ listing.title }}</p>
+                    <p style="color: #8c9ba5; font-size: 13px; margin-bottom: 15px;">{{ listing.description }}</p>
+
+                    <div style="background: #0d0f12; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: #8c9ba5;">السعر الأساسي:</span>
+                        <span style="color: #00ffcc; font-weight: bold;">${{ listing.price }}</span>
+                    </div>
+
+                    <div style="font-size: 13px; color: #8c9ba5; margin-bottom: 20px; display: flex; justify-content: space-between;">
+                        <span>البائع: <strong style="color:#fff">{{ listing.seller.username }}</strong></span>
+                        <span>اللعبة: <strong style="color:#fff">{{ listing.get_game_display }}</strong></span>
+                    </div>
+
+                    <h5 style="color: #ffc107;">حالة صفقة الضمان</h5>
+
+                    {% if not active_deal %}
+                        {% if request.user != listing.seller %}
+                            <form action="{% url 'start_p2p_deal' listing.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">شراء وتجميد الرصيد (Escrow)</button>
+                            </form>
+                            <small style="color: #8c9ba5; display: block; text-align: center; margin-top: 8px; font-size: 12px;">سيتم تجميد المبلغ بأمان لحين استلام الحساب.</small>
+                        {% else %}
+                            <div style="background: #0d0f12; padding: 10px; text-align: center; border-radius: 6px; color: #8c9ba5; font-size: 13px;">
+                                هذا إعلانك الخاص، بانتظار بدء المشتري.
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div style="background: #ffc107; color: #000; padding: 10px; text-align: center; border-radius: 6px; font-weight: bold; margin-bottom: 10px;">
+                            {{ active_deal.get_status_display }}
+                        </div>
+
+                        {% if active_deal.status == 'IN_PROGRESS' and request.user == active_deal.buyer %}
+                            <form action="{% url 'complete_p2p_deal' active_deal.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success" style="font-size: 13px;">تأكيد استلام الحساب وتحويل الفلوس ✅</button>
+                            </form>
+                        {% endif %}
+
+                        {% if active_deal.status == 'IN_PROGRESS' %}
+                            <button type="button" class="btn btn-danger" style="margin-top: 8px;" onclick="openModal()">فتح نزاع / طلب الإدارة 🚨</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- الشات -->
+            <div class="col-8">
+                <div class="chat-wrapper">
+                    <div class="chat-header">
+                        <div>
+                            <strong style="display: block; font-size: 15px;">{{ receiver.username|default:"غرفة الوساطة المشتركة" }}</strong>
+                            <span style="font-size: 11px; color: #00ffcc;">محادثة محمية بإشراف منصة 3enba</span>
+                        </div>
+                        <span style="font-size: 12px; background: #262d3a; padding: 4px 10px; border-radius: 4px;">ID: #{{ listing.id }}</span>
+                    </div>
+
+                    <div class="chat-messages" id="chatContainer">
+                        {% for msg in chat_messages %}
+                            <div class="msg {% if msg.sender == request.user %}msg-sent{% else %}msg-recv{% endif %}">
+                                {{ msg.message }}
+                                <span class="msg-info">{{ msg.sender.username }} • {{ msg.created_at|date:"H:i" }}</span>
+                            </div>
+                        {% empty %}
+                            <div style="text-align: center; color: #777; margin-top: 100px;">
+                                <p style="font-weight: bold; margin-bottom: 5px;">لا توجد رسائل سابقة في هذه الغرفة.</p>
+                                <p style="font-size: 13px;">ابدأ بإرسال الرسائل وتنسيق تسليم الحساب بكل أمان.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if receiver %}
+                    <div class="chat-input-area">
+                        <form method="POST" class="chat-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="receiver_id" value="{{ receiver.id }}">
+                            <input type="text" name="message" class="form-control" placeholder="اكتب رسالتك هنا..." required autocomplete="off">
+                            <button type="submit" class="btn btn-primary">إرسال</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div style="padding: 15px; background: #15181e; text-align: center; color: #777; font-size: 13px; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                        سيتم تفعيل الشات تلقائياً بمجرد بدء الصفقة.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal النزاع -->
+    {% if active_deal %}
+    <div class="modal" id="disputeModal">
+        <div class="modal-content">
+            <h5 style="color: #dc3545; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px;">فتح نزاع رسمي (تدخل الإدارة)</h5>
+            <form action="{% url 'create_dispute' active_deal.id %}" method="POST">
+                {% csrf_token %}
+                <p style="font-size: 13px; color: #aaa; line-height: 1.4;">فتح النزاع سيؤدي لتجميد الصفقة فوراً لحين مراجعة الإدارة.</p>
+                <textarea name="reason" class="form-control" placeholder="اشرح المشكلة بالتفصيل..." required></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn btn-outline" style="background:#333;" onclick="closeModal()">إلغاء</button>
+                    <button type="submit" class="btn btn-danger" style="margin-top:0;">تأكيد النزاع</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        // تثبيت الشات تحت
+        const chatContainer = document.getElementById('chatContainer');
+        if(chatContainer) { chatContainer.scrollTop = chatContainer.scrollHeight; }
+
+        // تحكم الـ Modal
+        function openModal() { document.getElementById('disputeModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('disputeModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
